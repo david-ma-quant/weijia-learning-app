@@ -645,6 +645,15 @@
             updateStats();
         }
 
+        function deleteHomeworkFromReview(id) {
+            if (!confirm('Delete this homework? 确定删除这个作业？')) return;
+            let homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            homework = homework.filter(h => h.id !== id);
+            localStorage.setItem('weijia_homework', JSON.stringify(homework));
+            filterReview();
+            updateStats();
+        }
+
         function filterReview() {
             const subject = document.getElementById('reviewSubject').value;
             const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
@@ -662,7 +671,10 @@
                         <span class="font-bold text-green-600">${h.subject}</span>
                         <span class="text-sm text-gray-400">${new Date(h.completedAt).toLocaleDateString('zh-CN')}</span>
                     </div>
-                    <p class="text-gray-700">${h.content}</p>
+                    <p class="text-gray-700 mb-3">${h.content}</p>
+                    <button onclick="deleteHomeworkFromReview(${h.id})" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
+                        🗑️ Delete 删除
+                    </button>
                 </div>
             `).join('');
         }
