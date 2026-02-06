@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Nunito', sans-serif; }
+        * { font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .card-gradient { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
         .pink-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
@@ -24,6 +24,8 @@
         }
         .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .current-week { border: 3px solid #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+        .tab-active { background: white; color: #7c3aed; }
+        .homework-card { border-left: 4px solid #8b5cf6; }
     </style>
 </head>
 <body class="min-h-screen gradient-bg">
@@ -36,130 +38,262 @@
             <p class="text-white/80 text-lg">每天进步一点点 🌱</p>
         </header>
 
-        <!-- Progress Dashboard -->
-        <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl bounce-in">
-            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
-                📊 我的进度
-            </h2>
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div class="pink-gradient rounded-2xl p-4 text-white">
-                    <div class="text-3xl font-bold" id="streak">0</div>
-                    <div class="text-sm opacity-90">🔥 连续天数</div>
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center mb-6">
+            <div class="bg-white/20 backdrop-blur rounded-full p-1 flex gap-1">
+                <button onclick="showTab('main')" id="tab-main" class="px-4 py-2 rounded-full font-bold transition-all tab-active">📊 主页</button>
+                <button onclick="showTab('homework')" id="tab-homework" class="px-4 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20">📚 作业</button>
+                <button onclick="showTab('review')" id="tab-review" class="px-4 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20">📖 复习</button>
+            </div>
+        </div>
+
+        <!-- Main Tab -->
+        <div id="content-main">
+            <!-- Progress Dashboard -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl bounce-in">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
+                    📊 我的进度
+                </h2>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="pink-gradient rounded-2xl p-4 text-white">
+                        <div class="text-3xl font-bold" id="streak">0</div>
+                        <div class="text-sm opacity-90">🔥 连续天数</div>
+                    </div>
+                    <div class="blue-gradient rounded-2xl p-4 text-white">
+                        <div class="text-3xl font-bold" id="challenges">0</div>
+                        <div class="text-sm opacity-90">✅ 挑战完成</div>
+                    </div>
+                    <div class="green-gradient rounded-2xl p-4 text-white">
+                        <div class="text-3xl font-bold" id="homeworkCount">0</div>
+                        <div class="text-sm opacity-90">📝 作业完成</div>
+                    </div>
                 </div>
-                <div class="blue-gradient rounded-2xl p-4 text-white">
-                    <div class="text-3xl font-bold" id="challenges">0</div>
-                    <div class="text-sm opacity-90">✅ 挑战完成</div>
+            </div>
+
+            <!-- Weekly AI Challenges -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
+                    🎯 每周英文 AI 挑战
+                </h2>
+                <p class="text-gray-500 mb-4 text-sm">用英文和 AI 对话，完成挑战后打勾 ✓</p>
+                <div class="space-y-3" id="challengeList">
+                    <!-- Challenges will be inserted here -->
                 </div>
-                <div class="green-gradient rounded-2xl p-4 text-white">
-                    <div class="text-3xl font-bold" id="questions">0</div>
-                    <div class="text-sm opacity-90">❓ 问题数量</div>
+            </div>
+
+            <!-- Question of the Day -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
+                    💡 今日好问题
+                </h2>
+                <p class="text-gray-500 mb-3 text-sm">好问题比好答案更重要！试着问 "为什么...？" "如果...会怎样？" "怎么才能...？"</p>
+                <div class="bg-purple-50 rounded-xl p-4 mb-4">
+                    <p class="text-purple-700 font-semibold mb-2">💭 好问题示例：</p>
+                    <ul class="text-purple-600 text-sm space-y-1">
+                        <li>• 为什么天空是蓝色的？</li>
+                        <li>• 如果地球停止转动会怎样？</li>
+                        <li>• 怎么才能让 AI 画出更好看的图？</li>
+                    </ul>
+                </div>
+                <textarea 
+                    id="dailyQuestion" 
+                    class="w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none resize-none"
+                    rows="3"
+                    placeholder="写下你今天的好问题..."></textarea>
+                <button onclick="saveQuestion()" class="mt-3 w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02]">
+                    保存问题 💾
+                </button>
+                <div id="questionHistory" class="mt-4 space-y-2"></div>
+            </div>
+
+            <!-- Teach Back Section -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
+                    👩‍🏫 小老师时间
+                </h2>
+                <p class="text-gray-500 mb-4 text-sm">用你自己的话教给别人 —— 这是最好的学习方式！</p>
+                <div class="bg-orange-50 rounded-xl p-4 mb-4">
+                    <p class="text-orange-700">🎬 可以录一段 2 分钟的视频，教别人你今天学到的东西！</p>
+                </div>
+                <textarea 
+                    id="teachBack" 
+                    class="w-full p-4 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none resize-none"
+                    rows="4"
+                    placeholder="今天我学到了...我想这样解释给别人听..."></textarea>
+                <button onclick="saveTeachBack()" class="mt-3 w-full bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02]">
+                    保存学习笔记 📝
+                </button>
+            </div>
+
+            <!-- AI Tools Recommendations (China-accessible) -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
+                    🛠️ AI 工具推荐（国内可用）
+                </h2>
+                <p class="text-gray-500 mb-4 text-sm">⭐ = 简单入门 ｜ ⭐⭐ = 稍有难度</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <a href="https://chat.deepseek.com" target="_blank" class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-blue-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-blue-700">🔮 DeepSeek</span>
+                            <span class="text-yellow-500">⭐</span>
+                        </div>
+                        <p class="text-blue-600 text-sm mt-1">强大的 AI 对话助手，免费好用</p>
+                    </a>
+                    <a href="https://www.doubao.com" target="_blank" class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-orange-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-orange-700">🫛 豆包</span>
+                            <span class="text-yellow-500">⭐</span>
+                        </div>
+                        <p class="text-orange-600 text-sm mt-1">字节跳动出品，聊天写作都很棒</p>
+                    </a>
+                    <a href="https://kimi.moonshot.cn" target="_blank" class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-purple-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-purple-700">🌙 Kimi</span>
+                            <span class="text-yellow-500">⭐</span>
+                        </div>
+                        <p class="text-purple-600 text-sm mt-1">超长文本处理，读文章超厉害</p>
+                    </a>
+                    <a href="https://yiyan.baidu.com" target="_blank" class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-green-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-green-700">💬 文心一言</span>
+                            <span class="text-yellow-500">⭐</span>
+                        </div>
+                        <p class="text-green-600 text-sm mt-1">百度出品，中文理解很强</p>
+                    </a>
+                    <a href="https://tongyi.aliyun.com" target="_blank" class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-red-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-red-700">🧠 通义千问</span>
+                            <span class="text-yellow-500">⭐</span>
+                        </div>
+                        <p class="text-red-600 text-sm mt-1">阿里出品，功能全面</p>
+                    </a>
+                    <a href="https://www.tiangong.cn" target="_blank" class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-cyan-100 block no-underline">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-cyan-700">🎨 天工 AI</span>
+                            <span class="text-yellow-500">⭐⭐</span>
+                        </div>
+                        <p class="text-cyan-600 text-sm mt-1">可以画画和创作</p>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Weekly AI Challenges -->
-        <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
-            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
-                🎯 每周英文 AI 挑战
-            </h2>
-            <p class="text-gray-500 mb-4 text-sm">用英文和 AI 对话，完成挑战后打勾 ✓</p>
-            <div class="space-y-3" id="challengeList">
-                <!-- Challenges will be inserted here -->
+        <!-- Homework Tab -->
+        <div id="content-homework" class="hidden">
+            <!-- Add Homework -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4">📝 添加新作业</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-600 mb-2 font-semibold">科目</label>
+                        <select id="hwSubject" class="w-full p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none">
+                            <option value="语文">📖 语文</option>
+                            <option value="数学">🔢 数学</option>
+                            <option value="英语">🔤 英语</option>
+                            <option value="物理">⚡ 物理</option>
+                            <option value="化学">🧪 化学</option>
+                            <option value="生物">🌿 生物</option>
+                            <option value="历史">📜 历史</option>
+                            <option value="地理">🌍 地理</option>
+                            <option value="政治">📋 政治</option>
+                            <option value="其他">📌 其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 mb-2 font-semibold">作业内容</label>
+                        <textarea 
+                            id="hwContent" 
+                            class="w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none resize-none"
+                            rows="3"
+                            placeholder="描述作业内容..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 mb-2 font-semibold">截止日期</label>
+                        <input type="date" id="hwDueDate" class="w-full p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none">
+                    </div>
+                    <button onclick="addHomework()" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02]">
+                        添加作业 ➕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pending Homework -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4">📋 待完成作业</h2>
+                <div id="pendingHomework" class="space-y-3">
+                    <p class="text-gray-400 text-center py-8">暂无待完成作业 ✨</p>
+                </div>
+            </div>
+
+            <!-- AI Homework Helper -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4">🤖 AI 作业助手</h2>
+                <p class="text-gray-500 mb-4 text-sm">遇到不会的题目？复制题目到下面的 AI 工具寻求帮助！</p>
+                <div class="bg-blue-50 rounded-xl p-4 mb-4">
+                    <p class="text-blue-700 font-semibold mb-2">💡 使用技巧：</p>
+                    <ul class="text-blue-600 text-sm space-y-1">
+                        <li>• 先自己思考，不会再问 AI</li>
+                        <li>• 让 AI 解释思路，不要直接抄答案</li>
+                        <li>• 用英文问题练习英语！</li>
+                    </ul>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="https://chat.deepseek.com" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl text-center transition-all">
+                        🔮 问 DeepSeek
+                    </a>
+                    <a href="https://www.doubao.com" target="_blank" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl text-center transition-all">
+                        🫛 问豆包
+                    </a>
+                    <a href="https://kimi.moonshot.cn" target="_blank" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-xl text-center transition-all">
+                        🌙 问 Kimi
+                    </a>
+                    <a href="https://yiyan.baidu.com" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl text-center transition-all">
+                        💬 问文心一言
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Question of the Day -->
-        <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
-            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
-                💡 今日好问题
-            </h2>
-            <p class="text-gray-500 mb-3 text-sm">好问题比好答案更重要！试着问 "为什么...？" "如果...会怎样？" "怎么才能...？"</p>
-            <div class="bg-purple-50 rounded-xl p-4 mb-4">
-                <p class="text-purple-700 font-semibold mb-2">💭 好问题示例：</p>
-                <ul class="text-purple-600 text-sm space-y-1">
-                    <li>• 为什么天空是蓝色的？</li>
-                    <li>• 如果地球停止转动会怎样？</li>
-                    <li>• 怎么才能让 AI 画出更好看的图？</li>
-                </ul>
-            </div>
-            <textarea 
-                id="dailyQuestion" 
-                class="w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none resize-none"
-                rows="3"
-                placeholder="写下你今天的好问题..."></textarea>
-            <button onclick="saveQuestion()" class="mt-3 w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02]">
-                保存问题 💾
-            </button>
-            <div id="questionHistory" class="mt-4 space-y-2"></div>
-        </div>
+        <!-- Review Tab -->
+        <div id="content-review" class="hidden">
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4">📖 考试复习</h2>
+                <p class="text-gray-500 mb-4">选择科目查看历史作业，帮助你复习！</p>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-600 mb-2 font-semibold">选择科目</label>
+                    <select id="reviewSubject" onchange="filterReview()" class="w-full p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none">
+                        <option value="all">📚 全部科目</option>
+                        <option value="语文">📖 语文</option>
+                        <option value="数学">🔢 数学</option>
+                        <option value="英语">🔤 英语</option>
+                        <option value="物理">⚡ 物理</option>
+                        <option value="化学">🧪 化学</option>
+                        <option value="生物">🌿 生物</option>
+                        <option value="历史">📜 历史</option>
+                        <option value="地理">🌍 地理</option>
+                        <option value="政治">📋 政治</option>
+                    </select>
+                </div>
 
-        <!-- Teach Back Section -->
-        <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
-            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
-                👩‍🏫 小老师时间
-            </h2>
-            <p class="text-gray-500 mb-4 text-sm">用你自己的话教给别人 —— 这是最好的学习方式！</p>
-            <div class="bg-orange-50 rounded-xl p-4 mb-4">
-                <p class="text-orange-700">🎬 可以录一段 2 分钟的视频，教别人你今天学到的东西！</p>
+                <div id="reviewList" class="space-y-3">
+                    <p class="text-gray-400 text-center py-8">完成作业后这里会显示历史记录 📝</p>
+                </div>
             </div>
-            <textarea 
-                id="teachBack" 
-                class="w-full p-4 border-2 border-orange-200 rounded-xl focus:border-orange-400 focus:outline-none resize-none"
-                rows="4"
-                placeholder="今天我学到了...我想这样解释给别人听..."></textarea>
-            <button onclick="saveTeachBack()" class="mt-3 w-full bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02]">
-                保存学习笔记 📝
-            </button>
-        </div>
 
-        <!-- AI Tools Recommendations -->
-        <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
-            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center">
-                🛠️ AI 工具推荐
-            </h2>
-            <p class="text-gray-500 mb-4 text-sm">⭐ = 简单入门 ｜ ⭐⭐ = 稍有难度</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <a href="https://chat.openai.com" target="_blank" class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-green-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-green-700">🤖 ChatGPT / Claude</span>
-                        <span class="text-yellow-500">⭐</span>
-                    </div>
-                    <p class="text-green-600 text-sm mt-1">通用对话、写作、学习</p>
-                </a>
-                <a href="https://www.midjourney.com" target="_blank" class="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-pink-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-pink-700">🎨 Midjourney / DALL-E</span>
-                        <span class="text-yellow-500">⭐</span>
-                    </div>
-                    <p class="text-pink-600 text-sm mt-1">画画、创意表达</p>
-                </a>
-                <a href="https://www.duolingo.com" target="_blank" class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-blue-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-blue-700">🦉 Duolingo</span>
-                        <span class="text-yellow-500">⭐</span>
-                    </div>
-                    <p class="text-blue-600 text-sm mt-1">英语基础（游戏化）</p>
-                </a>
-                <a href="https://www.speak.com" target="_blank" class="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-violet-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-violet-700">🗣️ Speak App</span>
-                        <span class="text-yellow-500">⭐</span>
-                    </div>
-                    <p class="text-violet-600 text-sm mt-1">AI 英语口语练习</p>
-                </a>
-                <a href="https://replit.com" target="_blank" class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-amber-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-amber-700">💻 Replit</span>
-                        <span class="text-yellow-500">⭐⭐</span>
-                    </div>
-                    <p class="text-amber-600 text-sm mt-1">做小项目、小游戏</p>
-                </a>
-                <a href="https://www.notion.so" target="_blank" class="bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl p-4 card-hover transition-all duration-300 cursor-pointer border border-slate-100 block no-underline">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-slate-700">📓 Notion AI</span>
-                        <span class="text-yellow-500">⭐⭐</span>
-                    </div>
-                    <p class="text-slate-600 text-sm mt-1">整理笔记、做计划</p>
+            <!-- AI Review Helper -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-4">🎯 AI 复习助手</h2>
+                <div class="bg-green-50 rounded-xl p-4 mb-4">
+                    <p class="text-green-700 font-semibold mb-2">📝 复习建议：</p>
+                    <ul class="text-green-600 text-sm space-y-1">
+                        <li>• 把作业内容复制给 AI，让它出类似的题目</li>
+                        <li>• 让 AI 总结这个章节的重点</li>
+                        <li>• 让 AI 扮演老师考你！</li>
+                    </ul>
+                </div>
+                <a href="https://chat.deepseek.com" target="_blank" class="block w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl text-center transition-all duration-200 transform hover:scale-[1.02]">
+                    🚀 开始 AI 复习
                 </a>
             </div>
         </div>
@@ -176,9 +310,31 @@
         <footer class="text-center text-white/60 text-sm pb-8">
             Made with 💜 by 哥哥 David
         </footer>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-3xl p-6 m-4 max-w-md w-full">
+                <h3 class="text-xl font-bold text-purple-600 mb-4">⚙️ 通知设置</h3>
+                <p class="text-gray-500 text-sm mb-4">设置 Server酱 Key 后，完成任务会通知妈妈</p>
+                <input type="text" id="serverChanKey" placeholder="Server酱 SendKey" 
+                    class="w-full p-3 border-2 border-purple-200 rounded-xl focus:border-purple-400 focus:outline-none mb-4">
+                <div class="flex gap-3">
+                    <button onclick="saveSettings()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-xl">保存</button>
+                    <button onclick="closeSettings()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-xl">取消</button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Settings Button -->
+    <button onclick="openSettings()" class="fixed bottom-6 right-6 w-14 h-14 bg-white shadow-2xl rounded-full flex items-center justify-center text-2xl hover:scale-110 transition-all">
+        ⚙️
+    </button>
+
     <script>
+        // Server酱 Key for WeChat notifications
+        let serverChanKey = localStorage.getItem('weijia_serverchan') || '';
+
         // Weekly challenges data
         const challenges = [
             { week: 1, title: "Ask AI to introduce your favorite celebrity", desc: "用英文让 AI 介绍一个你喜欢的明星", completed: false },
@@ -193,6 +349,55 @@
 
         // Current week (you can adjust this)
         const currentWeek = 1;
+
+        // Tab switching
+        function showTab(tab) {
+            ['main', 'homework', 'review'].forEach(t => {
+                document.getElementById('content-' + t).classList.add('hidden');
+                document.getElementById('tab-' + t).classList.remove('tab-active');
+                document.getElementById('tab-' + t).classList.add('text-white');
+            });
+            document.getElementById('content-' + tab).classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.add('tab-active');
+            document.getElementById('tab-' + tab).classList.remove('text-white');
+            
+            if (tab === 'homework') renderHomework();
+            if (tab === 'review') filterReview();
+        }
+
+        // Settings
+        function openSettings() {
+            document.getElementById('serverChanKey').value = serverChanKey;
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            serverChanKey = document.getElementById('serverChanKey').value.trim();
+            localStorage.setItem('weijia_serverchan', serverChanKey);
+            closeSettings();
+            alert('设置已保存！');
+        }
+
+        // Send WeChat notification via Server酱
+        async function sendNotification(title, content) {
+            if (!serverChanKey) return;
+            try {
+                const url = `https://sctapi.ftqq.com/${serverChanKey}.send`;
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `title=${encodeURIComponent(title)}&desp=${encodeURIComponent(content)}`,
+                    mode: 'no-cors' // Server酱 doesn't support CORS, but the request still goes through
+                });
+                console.log('Notification sent:', title);
+            } catch (e) {
+                console.error('Failed to send notification:', e);
+            }
+        }
 
         // Load saved data
         function loadData() {
@@ -214,7 +419,7 @@
             container.innerHTML = challenges.map((c, i) => `
                 <div class="flex items-center p-4 rounded-xl transition-all duration-200 ${c.week === currentWeek ? 'current-week bg-amber-50' : 'bg-gray-50 hover:bg-gray-100'}" 
                      onclick="toggleChallenge(${i})">
-                    <div class="w-10 h-10 rounded-full ${c.completed ? 'bg-green-400' : 'bg-gray-200'} flex items-center justify-center mr-4 transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full ${c.completed ? 'bg-green-400' : 'bg-gray-200'} flex items-center justify-center mr-4 transition-all duration-300 text-white font-bold">
                         ${c.completed ? '✓' : c.week}
                     </div>
                     <div class="flex-1">
@@ -230,10 +435,19 @@
 
         // Toggle challenge completion
         function toggleChallenge(index) {
-            challenges[index].completed = !challenges[index].completed;
+            const wasCompleted = challenges[index].completed;
+            challenges[index].completed = !wasCompleted;
             localStorage.setItem('weijia_challenges', JSON.stringify(challenges));
             updateStats();
             renderChallenges();
+            
+            // Send notification when completing a challenge
+            if (!wasCompleted && challenges[index].completed) {
+                sendNotification(
+                    '🎉 唯嘉完成了一个挑战！',
+                    `✅ Week ${challenges[index].week}: ${challenges[index].title}\n\n${challenges[index].desc}\n\n继续加油！💪`
+                );
+            }
         }
 
         // Update stats
@@ -241,10 +455,10 @@
             const completed = challenges.filter(c => c.completed).length;
             document.getElementById('challenges').textContent = completed;
             
-            const questions = JSON.parse(localStorage.getItem('weijia_questions') || '[]');
-            document.getElementById('questions').textContent = questions.length;
+            const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            const completedHW = homework.filter(h => h.completed).length;
+            document.getElementById('homeworkCount').textContent = completedHW;
             
-            // Calculate streak (simplified)
             const streak = localStorage.getItem('weijia_streak') || '0';
             document.getElementById('streak').textContent = streak;
         }
@@ -275,6 +489,13 @@
             textarea.value = '';
             updateStats();
             loadQuestionHistory();
+            
+            // Send notification
+            sendNotification(
+                '💡 唯嘉提了一个好问题！',
+                `❓ ${question}\n\n📅 ${new Date().toLocaleDateString('zh-CN')}`
+            );
+            
             alert('问题已保存！继续保持好奇心 🌟');
         }
 
@@ -311,7 +532,115 @@
             localStorage.setItem('weijia_teachback', JSON.stringify(entries));
             
             textarea.value = '';
+            
+            // Send notification
+            sendNotification(
+                '👩‍🏫 唯嘉当小老师了！',
+                `📝 ${content}\n\n📅 ${new Date().toLocaleDateString('zh-CN')}`
+            );
+            
             alert('学习笔记已保存！你是最棒的小老师 👩‍🏫');
+        }
+
+        // Homework functions
+        function addHomework() {
+            const subject = document.getElementById('hwSubject').value;
+            const content = document.getElementById('hwContent').value.trim();
+            const dueDate = document.getElementById('hwDueDate').value;
+            
+            if (!content) return alert('请填写作业内容！');
+            
+            const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            homework.unshift({
+                id: Date.now(),
+                subject,
+                content,
+                dueDate,
+                completed: false,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('weijia_homework', JSON.stringify(homework));
+            
+            document.getElementById('hwContent').value = '';
+            document.getElementById('hwDueDate').value = '';
+            
+            renderHomework();
+            updateStats();
+            alert('作业已添加！');
+        }
+
+        function renderHomework() {
+            const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            const pending = homework.filter(h => !h.completed);
+            const container = document.getElementById('pendingHomework');
+            
+            if (pending.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">暂无待完成作业 ✨</p>';
+                return;
+            }
+            
+            container.innerHTML = pending.map(h => `
+                <div class="homework-card bg-gray-50 rounded-xl p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold text-purple-600">${getSubjectEmoji(h.subject)} ${h.subject}</span>
+                        ${h.dueDate ? `<span class="text-sm text-gray-400">截止: ${h.dueDate}</span>` : ''}
+                    </div>
+                    <p class="text-gray-700 mb-3">${h.content}</p>
+                    <button onclick="completeHomework(${h.id})" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
+                        ✅ 完成
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function getSubjectEmoji(subject) {
+            const emojis = {
+                '语文': '📖', '数学': '🔢', '英语': '🔤', '物理': '⚡',
+                '化学': '🧪', '生物': '🌿', '历史': '📜', '地理': '🌍',
+                '政治': '📋', '其他': '📌'
+            };
+            return emojis[subject] || '📌';
+        }
+
+        function completeHomework(id) {
+            const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            const hw = homework.find(h => h.id === id);
+            if (hw) {
+                hw.completed = true;
+                hw.completedAt = new Date().toISOString();
+                localStorage.setItem('weijia_homework', JSON.stringify(homework));
+                
+                // Send notification
+                sendNotification(
+                    '✅ 唯嘉完成了作业！',
+                    `📚 ${hw.subject}\n📝 ${hw.content}\n\n完成时间: ${new Date().toLocaleString('zh-CN')}\n\n太棒了！继续保持！💪`
+                );
+            }
+            renderHomework();
+            updateStats();
+            alert('作业已完成！太棒了！🎉');
+        }
+
+        function filterReview() {
+            const subject = document.getElementById('reviewSubject').value;
+            const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            const completed = homework.filter(h => h.completed && (subject === 'all' || h.subject === subject));
+            const container = document.getElementById('reviewList');
+            
+            if (completed.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">该科目暂无已完成作业 📝</p>';
+                return;
+            }
+            
+            container.innerHTML = completed.map(h => `
+                <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-green-400">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold text-green-600">${getSubjectEmoji(h.subject)} ${h.subject}</span>
+                        <span class="text-sm text-gray-400">${new Date(h.completedAt).toLocaleDateString('zh-CN')}</span>
+                    </div>
+                    <p class="text-gray-700">${h.content}</p>
+                </div>
+            `).join('');
         }
 
         // Initialize
