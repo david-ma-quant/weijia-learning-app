@@ -610,6 +610,9 @@
                     <button onclick="completeHomework(${h.id})" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
                         ✅ Done 完成
                     </button>
+                    <button onclick="deleteHomework(${h.id})" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all ml-2">
+                        🗑️ Delete 删除
+                    </button>
                 </div>
             `).join('');
         }
@@ -631,6 +634,15 @@
             renderHomework();
             updateStats();
             alert('Homework done! Awesome! 🎉 作业已完成！太棒了！');
+        }
+
+        function deleteHomework(id) {
+            if (!confirm('Delete this homework? 确定删除这个作业？')) return;
+            let homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
+            homework = homework.filter(h => h.id !== id);
+            localStorage.setItem('weijia_homework', JSON.stringify(homework));
+            renderHomework();
+            updateStats();
         }
 
         function filterReview() {
