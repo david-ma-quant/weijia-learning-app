@@ -15,6 +15,7 @@
         .green-gradient { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
         .orange-gradient { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
         .purple-gradient { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+        .teal-gradient { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
         .bounce-in { animation: bounceIn 0.5s ease-out; }
         @keyframes bounceIn {
             0% { transform: scale(0.3); opacity: 0; }
@@ -27,6 +28,11 @@
         .tab-active { background: white; color: #7c3aed; }
         .homework-card { border-left: 4px solid #8b5cf6; }
         .cn-text { font-size: 0.85em; color: #6b7280; margin-top: 2px; }
+        .vocab-card { border-left: 4px solid #10b981; }
+        .scenario-btn { transition: all 0.2s; }
+        .scenario-btn:hover { transform: scale(1.02); }
+        .copy-btn { transition: all 0.2s; }
+        .copy-btn:hover { background: #4f46e5; }
     </style>
 </head>
 <body class="min-h-screen gradient-bg">
@@ -42,16 +48,19 @@
         </header>
 
         <!-- Navigation Tabs -->
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-center mb-6 overflow-x-auto">
             <div class="bg-white/20 backdrop-blur rounded-full p-1 flex gap-1">
-                <button onclick="showTab('main')" id="tab-main" class="px-4 py-2 rounded-full font-bold transition-all tab-active">
-                    📊 Home<span class="text-xs ml-1 opacity-70">主页</span>
+                <button onclick="showTab('main')" id="tab-main" class="px-3 py-2 rounded-full font-bold transition-all tab-active text-sm">
+                    📊 Home
                 </button>
-                <button onclick="showTab('homework')" id="tab-homework" class="px-4 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20">
-                    📚 Homework<span class="text-xs ml-1 opacity-70">作业</span>
+                <button onclick="showTab('english')" id="tab-english" class="px-3 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20 text-sm">
+                    🔤 English
                 </button>
-                <button onclick="showTab('review')" id="tab-review" class="px-4 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20">
-                    📖 Review<span class="text-xs ml-1 opacity-70">复习</span>
+                <button onclick="showTab('homework')" id="tab-homework" class="px-3 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20 text-sm">
+                    📚 Homework
+                </button>
+                <button onclick="showTab('review')" id="tab-review" class="px-3 py-2 rounded-full font-bold transition-all text-white hover:bg-white/20 text-sm">
+                    📖 Review
                 </button>
             </div>
         </div>
@@ -62,21 +71,26 @@
             <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl bounce-in">
                 <h2 class="text-2xl font-bold text-purple-600 mb-1">📊 My Progress</h2>
                 <p class="text-gray-500 text-sm mb-4">我的进度</p>
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div class="pink-gradient rounded-2xl p-4 text-white">
-                        <div class="text-3xl font-bold" id="streak">0</div>
-                        <div class="text-sm opacity-90">🔥 Day Streak</div>
+                <div class="grid grid-cols-4 gap-3 text-center">
+                    <div class="pink-gradient rounded-2xl p-3 text-white">
+                        <div class="text-2xl font-bold" id="streak">0</div>
+                        <div class="text-xs opacity-90">🔥 Streak</div>
                         <div class="text-xs opacity-70">连续天数</div>
                     </div>
-                    <div class="blue-gradient rounded-2xl p-4 text-white">
-                        <div class="text-3xl font-bold" id="challenges">0</div>
-                        <div class="text-sm opacity-90">✅ Challenges</div>
-                        <div class="text-xs opacity-70">挑战完成</div>
+                    <div class="blue-gradient rounded-2xl p-3 text-white">
+                        <div class="text-2xl font-bold" id="challenges">0</div>
+                        <div class="text-xs opacity-90">✅ Challenges</div>
+                        <div class="text-xs opacity-70">挑战</div>
                     </div>
-                    <div class="green-gradient rounded-2xl p-4 text-white">
-                        <div class="text-3xl font-bold" id="homeworkCount">0</div>
-                        <div class="text-sm opacity-90">📝 Homework</div>
-                        <div class="text-xs opacity-70">作业完成</div>
+                    <div class="green-gradient rounded-2xl p-3 text-white">
+                        <div class="text-2xl font-bold" id="homeworkCount">0</div>
+                        <div class="text-xs opacity-90">📝 Homework</div>
+                        <div class="text-xs opacity-70">作业</div>
+                    </div>
+                    <div class="teal-gradient rounded-2xl p-3 text-white">
+                        <div class="text-2xl font-bold" id="vocabCount">0</div>
+                        <div class="text-xs opacity-90">📚 Words</div>
+                        <div class="text-xs opacity-70">单词</div>
                     </div>
                 </div>
             </div>
@@ -187,6 +201,176 @@
                         <p class="text-cyan-600 text-sm mt-1">Can draw and create</p>
                         <p class="cn-text">可以画画和创作</p>
                     </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- English 1v1 Tab (NEW) -->
+        <div id="content-english" class="hidden">
+            <!-- Vocabulary Book -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-green-600 mb-1">📚 Vocabulary Book</h2>
+                <p class="text-gray-500 text-sm mb-4">课后词汇本</p>
+                <p class="text-gray-400 mb-4 text-sm">Record 5-10 new words after each English class!<br><span class="cn-text">每节英语课后记录 5-10 个新词！</span></p>
+                
+                <!-- Add new word -->
+                <div class="bg-green-50 rounded-xl p-4 mb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                        <input type="text" id="newWord" placeholder="English word / 英文单词" 
+                            class="p-3 border-2 border-green-200 rounded-xl focus:border-green-400 focus:outline-none">
+                        <input type="text" id="wordMeaning" placeholder="Chinese meaning / 中文意思" 
+                            class="p-3 border-2 border-green-200 rounded-xl focus:border-green-400 focus:outline-none">
+                    </div>
+                    <input type="text" id="wordExample" placeholder="Example sentence (optional) / 例句（可选）" 
+                        class="w-full p-3 border-2 border-green-200 rounded-xl focus:border-green-400 focus:outline-none mb-3">
+                    <button onclick="addVocab()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                        Add Word ➕<span class="text-sm ml-2 opacity-80">添加单词</span>
+                    </button>
+                </div>
+
+                <!-- AI Sentence Generator -->
+                <div class="bg-blue-50 rounded-xl p-4 mb-4">
+                    <p class="text-blue-700 font-semibold mb-2">🤖 AI Sentence Helper / AI 造句助手</p>
+                    <p class="text-blue-600 text-sm mb-3">Click to copy prompt, then paste to AI for example sentences!<br><span class="cn-text">点击复制提示词，粘贴给 AI 生成例句！</span></p>
+                    <button onclick="copyVocabPrompt()" class="copy-btn bg-blue-500 text-white font-bold py-2 px-4 rounded-lg text-sm">
+                        📋 Copy Prompt 复制提示词
+                    </button>
+                </div>
+
+                <!-- Vocab list -->
+                <div id="vocabList" class="space-y-3">
+                    <p class="text-gray-400 text-center py-4">No words yet. Add your first word! 📖<br><span class="cn-text">还没有单词，添加你的第一个单词吧！</span></p>
+                </div>
+
+                <!-- Review reminder -->
+                <div class="mt-4 bg-amber-50 rounded-xl p-4">
+                    <p class="text-amber-700 font-semibold">⏰ Review Reminder / 复习提醒</p>
+                    <p class="text-amber-600 text-sm mt-1">Words to review today: <span id="reviewCount" class="font-bold">0</span><br><span class="cn-text">今日需复习单词数</span></p>
+                    <button onclick="startVocabReview()" class="mt-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
+                        🎯 Start Review 开始复习
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Conversation Practice -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-purple-600 mb-1">💬 AI Conversation Practice</h2>
+                <p class="text-gray-500 text-sm mb-4">AI 对话练习</p>
+                <p class="text-gray-400 mb-4 text-sm">Practice English conversations with AI! Choose a scenario below.<br><span class="cn-text">和 AI 练习英语对话！选择下面的场景。</span></p>
+
+                <!-- Scenario buttons -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                    <button onclick="loadScenario('restaurant')" class="scenario-btn bg-gradient-to-r from-red-100 to-orange-100 rounded-xl p-4 text-left border border-red-200">
+                        <div class="text-2xl mb-1">🍕</div>
+                        <div class="font-bold text-red-700 text-sm">Restaurant</div>
+                        <div class="text-xs text-red-600">点餐</div>
+                    </button>
+                    <button onclick="loadScenario('shopping')" class="scenario-btn bg-gradient-to-r from-pink-100 to-purple-100 rounded-xl p-4 text-left border border-pink-200">
+                        <div class="text-2xl mb-1">🛍️</div>
+                        <div class="font-bold text-pink-700 text-sm">Shopping</div>
+                        <div class="text-xs text-pink-600">购物</div>
+                    </button>
+                    <button onclick="loadScenario('directions')" class="scenario-btn bg-gradient-to-r from-blue-100 to-cyan-100 rounded-xl p-4 text-left border border-blue-200">
+                        <div class="text-2xl mb-1">🗺️</div>
+                        <div class="font-bold text-blue-700 text-sm">Directions</div>
+                        <div class="text-xs text-blue-600">问路</div>
+                    </button>
+                    <button onclick="loadScenario('school')" class="scenario-btn bg-gradient-to-r from-green-100 to-teal-100 rounded-xl p-4 text-left border border-green-200">
+                        <div class="text-2xl mb-1">🏫</div>
+                        <div class="font-bold text-green-700 text-sm">School Life</div>
+                        <div class="text-xs text-green-600">校园生活</div>
+                    </button>
+                    <button onclick="loadScenario('travel')" class="scenario-btn bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl p-4 text-left border border-indigo-200">
+                        <div class="text-2xl mb-1">✈️</div>
+                        <div class="font-bold text-indigo-700 text-sm">Travel</div>
+                        <div class="text-xs text-indigo-600">旅行</div>
+                    </button>
+                    <button onclick="loadScenario('making_friends')" class="scenario-btn bg-gradient-to-r from-yellow-100 to-amber-100 rounded-xl p-4 text-left border border-yellow-200">
+                        <div class="text-2xl mb-1">👋</div>
+                        <div class="font-bold text-yellow-700 text-sm">Making Friends</div>
+                        <div class="text-xs text-yellow-600">交朋友</div>
+                    </button>
+                </div>
+
+                <!-- Selected scenario prompt -->
+                <div id="scenarioPrompt" class="bg-purple-50 rounded-xl p-4 mb-4 hidden">
+                    <p class="text-purple-700 font-semibold mb-2">📝 Conversation Prompt / 对话提示词</p>
+                    <p id="scenarioText" class="text-purple-600 text-sm mb-3 whitespace-pre-line"></p>
+                    <div class="flex gap-2">
+                        <button onclick="copyScenarioPrompt()" class="copy-btn bg-purple-500 text-white font-bold py-2 px-4 rounded-lg text-sm flex-1">
+                            📋 Copy 复制
+                        </button>
+                        <a href="https://www.doubao.com" target="_blank" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm text-center flex-1">
+                            🫛 Open Doubao
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="bg-green-50 rounded-xl p-4">
+                    <p class="text-green-700 font-semibold mb-2">💡 Tips / 练习技巧</p>
+                    <ul class="text-green-600 text-sm space-y-1">
+                        <li>• Try to reply in full sentences 尽量用完整句子回复</li>
+                        <li>• If stuck, ask AI: "How do I say... in English?" 不会说就问 AI</li>
+                        <li>• Don't be afraid of mistakes! AI will help you 不怕说错！AI 会帮你</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Class Recording Summary -->
+            <div class="bg-white/95 backdrop-blur rounded-3xl p-6 mb-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-blue-600 mb-1">🎙️ Class Recording Summary</h2>
+                <p class="text-gray-500 text-sm mb-4">课堂录音总结</p>
+                <p class="text-gray-400 mb-4 text-sm">Upload your class recording and let AI summarize the key points!<br><span class="cn-text">上传课堂录音，让 AI 帮你总结重点！</span></p>
+
+                <!-- Recording upload area -->
+                <div class="bg-blue-50 rounded-xl p-6 mb-4 text-center border-2 border-dashed border-blue-300">
+                    <div class="text-4xl mb-2">🎤</div>
+                    <p class="text-blue-700 font-semibold">How to use / 使用方法：</p>
+                    <ol class="text-blue-600 text-sm mt-2 text-left list-decimal list-inside space-y-2">
+                        <li>Record your 1v1 class (ask teacher's permission first!)<br><span class="cn-text">录制网课（先问老师是否允许！）</span></li>
+                        <li>Open Kimi (supports audio upload)<br><span class="cn-text">打开 Kimi（支持上传音频）</span></li>
+                        <li>Upload the recording and paste the prompt below<br><span class="cn-text">上传录音，粘贴下面的提示词</span></li>
+                    </ol>
+                </div>
+
+                <!-- Prompt for class summary -->
+                <div class="bg-indigo-50 rounded-xl p-4 mb-4">
+                    <p class="text-indigo-700 font-semibold mb-2">📝 Summary Prompt / 总结提示词</p>
+                    <p id="summaryPromptText" class="text-indigo-600 text-sm mb-3 bg-white p-3 rounded-lg">Please listen to this English class recording and help me:
+1. List all new vocabulary words with meanings
+2. Summarize the main grammar points
+3. Note any pronunciation corrections the teacher made
+4. List useful phrases or expressions
+5. Suggest 3 things I should practice
+
+请听这段英语课录音，帮我：
+1. 列出所有生词和意思
+2. 总结主要语法点
+3. 记录老师纠正的发音
+4. 列出有用的短语表达
+5. 建议3个需要练习的地方</p>
+                    <div class="flex gap-2">
+                        <button onclick="copySummaryPrompt()" class="copy-btn bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-sm flex-1">
+                            📋 Copy Prompt 复制提示词
+                        </button>
+                        <a href="https://kimi.moonshot.cn" target="_blank" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg text-sm text-center flex-1">
+                            🌙 Open Kimi
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Saved summaries -->
+                <div class="mb-4">
+                    <p class="text-gray-600 font-semibold mb-2">📋 Save Your Summary / 保存总结</p>
+                    <textarea id="classSummary" class="w-full p-4 border-2 border-blue-200 rounded-xl focus:border-blue-400 focus:outline-none resize-none" rows="4" placeholder="Paste your AI-generated summary here... 把 AI 生成的总结粘贴到这里..."></textarea>
+                    <button onclick="saveClassSummary()" class="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                        Save Summary 💾<span class="text-sm ml-2 opacity-80">保存总结</span>
+                    </button>
+                </div>
+
+                <!-- Saved summaries list -->
+                <div id="summaryList" class="space-y-3">
                 </div>
             </div>
         </div>
@@ -316,6 +500,26 @@
             </div>
         </div>
 
+        <!-- Vocab Review Modal -->
+        <div id="vocabReviewModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-3xl p-6 m-4 max-w-md w-full">
+                <h3 class="text-xl font-bold text-green-600 mb-1">🎯 Vocabulary Review</h3>
+                <p class="text-gray-500 text-sm mb-4">单词复习</p>
+                <div id="reviewCard" class="bg-green-50 rounded-xl p-6 text-center mb-4">
+                    <p id="reviewWord" class="text-3xl font-bold text-green-700 mb-2">word</p>
+                    <p id="reviewMeaning" class="text-gray-500 hidden">meaning</p>
+                    <p id="reviewExample" class="text-sm text-gray-400 mt-2 hidden">example</p>
+                </div>
+                <div class="flex gap-3 mb-4">
+                    <button onclick="showMeaning()" id="showMeaningBtn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl">Show 显示</button>
+                    <button onclick="nextReviewWord(false)" class="flex-1 bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-xl">Again 再来</button>
+                    <button onclick="nextReviewWord(true)" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl">Got it ✓</button>
+                </div>
+                <p class="text-center text-gray-500 text-sm">Progress: <span id="reviewProgress">0/0</span></p>
+                <button onclick="closeVocabReview()" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-xl">Close 关闭</button>
+            </div>
+        </div>
+
         <!-- Encouragement -->
         <div class="text-center py-6">
             <div class="inline-block bg-white/20 backdrop-blur rounded-2xl px-8 py-4">
@@ -356,6 +560,57 @@
         // Server酱 Key for WeChat notifications
         let serverChanKey = localStorage.getItem('weijia_serverchan') || '';
 
+        // Conversation scenarios
+        const scenarios = {
+            restaurant: `You are a friendly waiter at a restaurant. I am a customer. Let's practice ordering food in English. 
+
+Start by greeting me and asking what I'd like to order. Keep responses short and natural. If I make grammar mistakes, gently correct me and show the right way to say it.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是餐厅服务员，我是顾客。我们来练习英语点餐对话。用简短自然的回复。如果我语法错了，温柔地纠正我。每次对话后给我一个"有用短语"。`,
+
+            shopping: `You are a helpful shop assistant. I am a customer looking to buy clothes/shoes. Let's practice shopping conversations in English.
+
+Start by greeting me and asking how you can help. Keep responses short and natural. If I make mistakes, gently correct me.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是商店店员，我在买衣服/鞋子。我们来练习英语购物对话。如果我说错了，温柔地纠正我。每次对话后给我一个"有用短语"。`,
+
+            directions: `You are a local person on the street. I am a tourist asking for directions. Let's practice asking and giving directions in English.
+
+I'll ask you how to get to places like the train station, museum, or restaurant. Give me clear directions. If I make mistakes, gently correct me.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是当地人，我是游客问路。我们来练习英语问路对话。给我清楚的指路说明。如果我说错了，温柔地纠正我。`,
+
+            school: `You are my classmate at school. Let's have a casual conversation about school life in English - talking about classes, teachers, homework, hobbies, etc.
+
+Keep it natural and fun! If I make mistakes, gently correct me.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是我的同学。我们用英语聊聊学校生活——课程、老师、作业、爱好等。保持自然有趣！如果我说错了，温柔地纠正我。`,
+
+            travel: `You are a travel agent. I want to plan a trip. Let's practice travel-related conversations in English - booking flights, hotels, asking about attractions, etc.
+
+Keep responses helpful and clear. If I make mistakes, gently correct me.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是旅行社员工。我想计划一次旅行。我们来练习英语旅行对话——订机票、酒店、问景点等。如果我说错了，温柔地纠正我。`,
+
+            making_friends: `You are a new student from America. I want to make friends with you. Let's have a friendly conversation in English - introducing ourselves, talking about hobbies, favorite music, sports, etc.
+
+Be friendly and curious! If I make mistakes, gently correct me.
+
+After each exchange, give me a "Useful phrase" I can learn.
+
+你是来自美国的新同学。我想和你交朋友。我们用英语友好地聊天——自我介绍、爱好、喜欢的音乐、运动等。如果我说错了，温柔地纠正我。`
+        };
+
         // Weekly challenges data
         const challenges = [
             { week: 1, title: "Ask AI to introduce your favorite celebrity", desc: "用英文让 AI 介绍一个你喜欢的明星", completed: false },
@@ -371,9 +626,13 @@
         // Current week (you can adjust this)
         const currentWeek = 1;
 
+        // Review state
+        let reviewWords = [];
+        let currentReviewIndex = 0;
+
         // Tab switching
         function showTab(tab) {
-            ['main', 'homework', 'review'].forEach(t => {
+            ['main', 'english', 'homework', 'review'].forEach(t => {
                 document.getElementById('content-' + t).classList.add('hidden');
                 document.getElementById('tab-' + t).classList.remove('tab-active');
                 document.getElementById('tab-' + t).classList.add('text-white');
@@ -384,6 +643,10 @@
             
             if (tab === 'homework') renderHomework();
             if (tab === 'review') filterReview();
+            if (tab === 'english') {
+                renderVocab();
+                renderSummaries();
+            }
         }
 
         // Settings
@@ -449,7 +712,7 @@
                         </div>
                         <div class="text-sm text-gray-500">${c.desc}</div>
                     </div>
-                    ${c.week === currentWeek ? '<span class="bg-amber-400 text-white text-xs px-2 py-1 rounded-full ml-2">This Week 本周</span>' : ''}
+                    ${c.week === currentWeek ? '<span class="bg-amber-400 text-white text-xs px-2 py-1 rounded-full ml-2">This Week</span>' : ''}
                 </div>
             `).join('');
         }
@@ -462,11 +725,10 @@
             updateStats();
             renderChallenges();
             
-            // Send notification when completing a challenge
             if (!wasCompleted && challenges[index].completed) {
                 sendNotification(
-                    '🎉 Weijia completed a challenge! 唯嘉完成了一个挑战！',
-                    `✅ Week ${challenges[index].week}: ${challenges[index].title}\n\n${challenges[index].desc}\n\nKeep it up! 继续加油！💪`
+                    '🎉 Weijia completed a challenge!',
+                    `✅ Week ${challenges[index].week}: ${challenges[index].title}\n\n${challenges[index].desc}`
                 );
             }
         }
@@ -482,13 +744,29 @@
             
             const streak = localStorage.getItem('weijia_streak') || '0';
             document.getElementById('streak').textContent = streak;
+
+            const vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            document.getElementById('vocabCount').textContent = vocab.length;
+
+            // Update review count
+            const needReview = vocab.filter(v => needsReview(v)).length;
+            const reviewCountEl = document.getElementById('reviewCount');
+            if (reviewCountEl) reviewCountEl.textContent = needReview;
+        }
+
+        // Check if word needs review (simple spaced repetition)
+        function needsReview(vocab) {
+            if (!vocab.lastReview) return true;
+            const daysSince = (Date.now() - vocab.lastReview) / (1000 * 60 * 60 * 24);
+            const interval = vocab.interval || 1;
+            return daysSince >= interval;
         }
 
         // Save question
         function saveQuestion() {
             const textarea = document.getElementById('dailyQuestion');
             const question = textarea.value.trim();
-            if (!question) return alert('Please write your question first! 请先写下你的问题！');
+            if (!question) return alert('Please write your question first!');
             
             const questions = JSON.parse(localStorage.getItem('weijia_questions') || '[]');
             questions.unshift({
@@ -497,7 +775,6 @@
             });
             localStorage.setItem('weijia_questions', JSON.stringify(questions));
             
-            // Update streak
             let streak = parseInt(localStorage.getItem('weijia_streak') || '0');
             const lastDate = localStorage.getItem('weijia_last_date');
             const today = new Date().toDateString();
@@ -511,13 +788,8 @@
             updateStats();
             loadQuestionHistory();
             
-            // Send notification
-            sendNotification(
-                '💡 Weijia asked a great question! 唯嘉提了一个好问题！',
-                `❓ ${question}\n\n📅 ${new Date().toLocaleDateString('zh-CN')}`
-            );
-            
-            alert('Question saved! Stay curious! 🌟 问题已保存！继续保持好奇心！');
+            sendNotification('💡 Weijia asked a question!', `❓ ${question}`);
+            alert('Question saved! 🌟');
         }
 
         // Load question history
@@ -529,7 +801,7 @@
                 return;
             }
             container.innerHTML = `
-                <p class="text-sm text-gray-500 mt-4 mb-2">📜 Question History / 历史问题：</p>
+                <p class="text-sm text-gray-500 mt-4 mb-2">📜 Recent Questions:</p>
                 ${questions.slice(0, 5).map(q => `
                     <div class="bg-purple-50 rounded-lg p-3 text-sm">
                         <span class="text-purple-600">${q.text}</span>
@@ -543,7 +815,7 @@
         function saveTeachBack() {
             const textarea = document.getElementById('teachBack');
             const content = textarea.value.trim();
-            if (!content) return alert('Please write what you learned first! 请先写下你学到的内容！');
+            if (!content) return alert('Please write what you learned first!');
             
             const entries = JSON.parse(localStorage.getItem('weijia_teachback') || '[]');
             entries.unshift({
@@ -553,23 +825,246 @@
             localStorage.setItem('weijia_teachback', JSON.stringify(entries));
             
             textarea.value = '';
-            
-            // Send notification
-            sendNotification(
-                '👩‍🏫 Weijia became a mini teacher! 唯嘉当小老师了！',
-                `📝 ${content}\n\n📅 ${new Date().toLocaleDateString('zh-CN')}`
-            );
-            
-            alert('Notes saved! You are the best mini teacher! 👩‍🏫  学习笔记已保存！你是最棒的小老师！');
+            sendNotification('👩‍🏫 Weijia became a mini teacher!', `📝 ${content}`);
+            alert('Notes saved! 👩‍🏫');
         }
 
-        // Homework functions
+        // ============ VOCABULARY FUNCTIONS ============
+        function addVocab() {
+            const word = document.getElementById('newWord').value.trim();
+            const meaning = document.getElementById('wordMeaning').value.trim();
+            const example = document.getElementById('wordExample').value.trim();
+
+            if (!word || !meaning) {
+                return alert('Please enter both word and meaning! 请填写单词和意思！');
+            }
+
+            const vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            vocab.unshift({
+                id: Date.now(),
+                word,
+                meaning,
+                example,
+                createdAt: Date.now(),
+                lastReview: null,
+                interval: 1,
+                correctCount: 0
+            });
+            localStorage.setItem('weijia_vocab', JSON.stringify(vocab));
+
+            document.getElementById('newWord').value = '';
+            document.getElementById('wordMeaning').value = '';
+            document.getElementById('wordExample').value = '';
+
+            renderVocab();
+            updateStats();
+            alert('Word added! 单词已添加！');
+        }
+
+        function renderVocab() {
+            const vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            const container = document.getElementById('vocabList');
+
+            if (vocab.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-4">No words yet. Add your first word! 📖</p>';
+                return;
+            }
+
+            container.innerHTML = vocab.slice(0, 20).map(v => `
+                <div class="vocab-card bg-gray-50 rounded-xl p-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="font-bold text-green-700 text-lg">${v.word}</span>
+                            <span class="text-gray-500 ml-2">${v.meaning}</span>
+                        </div>
+                        <button onclick="deleteVocab(${v.id})" class="text-red-400 hover:text-red-600 text-sm">🗑️</button>
+                    </div>
+                    ${v.example ? `<p class="text-gray-400 text-sm mt-1 italic">"${v.example}"</p>` : ''}
+                    <div class="text-xs text-gray-400 mt-2">
+                        Added: ${new Date(v.createdAt).toLocaleDateString('zh-CN')}
+                        ${v.lastReview ? ` | Last review: ${new Date(v.lastReview).toLocaleDateString('zh-CN')}` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            if (vocab.length > 20) {
+                container.innerHTML += `<p class="text-gray-400 text-center text-sm">And ${vocab.length - 20} more words...</p>`;
+            }
+        }
+
+        function deleteVocab(id) {
+            if (!confirm('Delete this word? 删除这个单词？')) return;
+            let vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            vocab = vocab.filter(v => v.id !== id);
+            localStorage.setItem('weijia_vocab', JSON.stringify(vocab));
+            renderVocab();
+            updateStats();
+        }
+
+        function copyVocabPrompt() {
+            const vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            const recentWords = vocab.slice(0, 10).map(v => v.word).join(', ');
+            
+            const prompt = `Please create example sentences for these English words. For each word:
+1. Give a simple, natural sentence
+2. Highlight the word in the sentence
+3. Add Chinese translation
+
+Words: ${recentWords || 'apple, book, happy'}
+
+请为这些英语单词造例句。每个单词：
+1. 给出简单自然的句子
+2. 在句子中突出这个单词
+3. 加上中文翻译`;
+
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert('Prompt copied! Now paste it to AI 提示词已复制！去粘贴给 AI');
+            });
+        }
+
+        function startVocabReview() {
+            const vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            reviewWords = vocab.filter(v => needsReview(v));
+            
+            if (reviewWords.length === 0) {
+                alert('No words to review right now! 现在没有需要复习的单词！');
+                return;
+            }
+
+            currentReviewIndex = 0;
+            document.getElementById('vocabReviewModal').classList.remove('hidden');
+            showReviewWord();
+        }
+
+        function showReviewWord() {
+            if (currentReviewIndex >= reviewWords.length) {
+                alert('Review complete! Great job! 复习完成！做得好！');
+                closeVocabReview();
+                return;
+            }
+
+            const word = reviewWords[currentReviewIndex];
+            document.getElementById('reviewWord').textContent = word.word;
+            document.getElementById('reviewMeaning').textContent = word.meaning;
+            document.getElementById('reviewMeaning').classList.add('hidden');
+            document.getElementById('reviewExample').textContent = word.example || '';
+            document.getElementById('reviewExample').classList.add('hidden');
+            document.getElementById('showMeaningBtn').classList.remove('hidden');
+            document.getElementById('reviewProgress').textContent = `${currentReviewIndex + 1}/${reviewWords.length}`;
+        }
+
+        function showMeaning() {
+            document.getElementById('reviewMeaning').classList.remove('hidden');
+            document.getElementById('reviewExample').classList.remove('hidden');
+            document.getElementById('showMeaningBtn').classList.add('hidden');
+        }
+
+        function nextReviewWord(correct) {
+            const word = reviewWords[currentReviewIndex];
+            let vocab = JSON.parse(localStorage.getItem('weijia_vocab') || '[]');
+            const idx = vocab.findIndex(v => v.id === word.id);
+            
+            if (idx !== -1) {
+                vocab[idx].lastReview = Date.now();
+                if (correct) {
+                    vocab[idx].correctCount = (vocab[idx].correctCount || 0) + 1;
+                    vocab[idx].interval = Math.min((vocab[idx].interval || 1) * 2, 30);
+                } else {
+                    vocab[idx].interval = 1;
+                }
+                localStorage.setItem('weijia_vocab', JSON.stringify(vocab));
+            }
+
+            currentReviewIndex++;
+            showReviewWord();
+            updateStats();
+        }
+
+        function closeVocabReview() {
+            document.getElementById('vocabReviewModal').classList.add('hidden');
+        }
+
+        // ============ SCENARIO FUNCTIONS ============
+        function loadScenario(type) {
+            const prompt = scenarios[type];
+            document.getElementById('scenarioText').textContent = prompt;
+            document.getElementById('scenarioPrompt').classList.remove('hidden');
+        }
+
+        function copyScenarioPrompt() {
+            const text = document.getElementById('scenarioText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Prompt copied! 提示词已复制！');
+            });
+        }
+
+        // ============ CLASS SUMMARY FUNCTIONS ============
+        function copySummaryPrompt() {
+            const text = document.getElementById('summaryPromptText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Prompt copied! Now upload your recording to Kimi 提示词已复制！去 Kimi 上传录音');
+            });
+        }
+
+        function saveClassSummary() {
+            const summary = document.getElementById('classSummary').value.trim();
+            if (!summary) {
+                return alert('Please paste your summary first! 请先粘贴总结内容！');
+            }
+
+            const summaries = JSON.parse(localStorage.getItem('weijia_summaries') || '[]');
+            summaries.unshift({
+                id: Date.now(),
+                content: summary,
+                date: new Date().toLocaleDateString('zh-CN')
+            });
+            localStorage.setItem('weijia_summaries', JSON.stringify(summaries));
+
+            document.getElementById('classSummary').value = '';
+            renderSummaries();
+            
+            sendNotification('📝 Weijia saved a class summary!', summary.slice(0, 200) + '...');
+            alert('Summary saved! 总结已保存！');
+        }
+
+        function renderSummaries() {
+            const summaries = JSON.parse(localStorage.getItem('weijia_summaries') || '[]');
+            const container = document.getElementById('summaryList');
+
+            if (summaries.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = `
+                <p class="text-gray-600 font-semibold mb-2">📚 Saved Summaries / 已保存的总结</p>
+                ${summaries.slice(0, 5).map(s => `
+                    <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-blue-600 font-semibold">${s.date}</span>
+                            <button onclick="deleteSummary(${s.id})" class="text-red-400 hover:text-red-600 text-sm">🗑️</button>
+                        </div>
+                        <p class="text-gray-600 text-sm whitespace-pre-line">${s.content.slice(0, 300)}${s.content.length > 300 ? '...' : ''}</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function deleteSummary(id) {
+            if (!confirm('Delete this summary? 删除这个总结？')) return;
+            let summaries = JSON.parse(localStorage.getItem('weijia_summaries') || '[]');
+            summaries = summaries.filter(s => s.id !== id);
+            localStorage.setItem('weijia_summaries', JSON.stringify(summaries));
+            renderSummaries();
+        }
+
+        // ============ HOMEWORK FUNCTIONS ============
         function addHomework() {
             const subject = document.getElementById('hwSubject').value;
             const content = document.getElementById('hwContent').value.trim();
             const dueDate = document.getElementById('hwDueDate').value;
             
-            if (!content) return alert('Please fill in the homework content! 请填写作业内容！');
+            if (!content) return alert('Please fill in the homework content!');
             
             const homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
             homework.unshift({
@@ -587,7 +1082,7 @@
             
             renderHomework();
             updateStats();
-            alert('Homework added! 作业已添加！');
+            alert('Homework added!');
         }
 
         function renderHomework() {
@@ -596,7 +1091,7 @@
             const container = document.getElementById('pendingHomework');
             
             if (pending.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-8">No pending homework ✨<br><span class="cn-text">暂无待完成作业</span></p>';
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">No pending homework ✨</p>';
                 return;
             }
             
@@ -604,14 +1099,14 @@
                 <div class="homework-card bg-gray-50 rounded-xl p-4">
                     <div class="flex justify-between items-start mb-2">
                         <span class="font-bold text-purple-600">${h.subject}</span>
-                        ${h.dueDate ? `<span class="text-sm text-gray-400">Due 截止: ${h.dueDate}</span>` : ''}
+                        ${h.dueDate ? `<span class="text-sm text-gray-400">Due: ${h.dueDate}</span>` : ''}
                     </div>
                     <p class="text-gray-700 mb-3">${h.content}</p>
                     <button onclick="completeHomework(${h.id})" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
-                        ✅ Done 完成
+                        ✅ Done
                     </button>
                     <button onclick="deleteHomework(${h.id})" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all ml-2">
-                        🗑️ Delete 删除
+                        🗑️ Delete
                     </button>
                 </div>
             `).join('');
@@ -624,20 +1119,15 @@
                 hw.completed = true;
                 hw.completedAt = new Date().toISOString();
                 localStorage.setItem('weijia_homework', JSON.stringify(homework));
-                
-                // Send notification
-                sendNotification(
-                    '✅ Weijia finished homework! 唯嘉完成了作业！',
-                    `📚 ${hw.subject}\n📝 ${hw.content}\n\nCompleted 完成时间: ${new Date().toLocaleString('zh-CN')}\n\nAwesome! Keep it up! 太棒了！继续保持！💪`
-                );
+                sendNotification('✅ Weijia finished homework!', `📚 ${hw.subject}\n📝 ${hw.content}`);
             }
             renderHomework();
             updateStats();
-            alert('Homework done! Awesome! 🎉 作业已完成！太棒了！');
+            alert('Homework done! 🎉');
         }
 
         function deleteHomework(id) {
-            if (!confirm('Delete this homework? 确定删除这个作业？')) return;
+            if (!confirm('Delete this homework?')) return;
             let homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
             homework = homework.filter(h => h.id !== id);
             localStorage.setItem('weijia_homework', JSON.stringify(homework));
@@ -646,7 +1136,7 @@
         }
 
         function deleteHomeworkFromReview(id) {
-            if (!confirm('Delete this homework? 确定删除这个作业？')) return;
+            if (!confirm('Delete this homework?')) return;
             let homework = JSON.parse(localStorage.getItem('weijia_homework') || '[]');
             homework = homework.filter(h => h.id !== id);
             localStorage.setItem('weijia_homework', JSON.stringify(homework));
@@ -661,7 +1151,7 @@
             const container = document.getElementById('reviewList');
             
             if (completed.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-8">No completed homework for this subject 📝<br><span class="cn-text">该科目暂无已完成作业</span></p>';
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">No completed homework for this subject 📝</p>';
                 return;
             }
             
@@ -673,7 +1163,7 @@
                     </div>
                     <p class="text-gray-700 mb-3">${h.content}</p>
                     <button onclick="deleteHomeworkFromReview(${h.id})" class="bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
-                        🗑️ Delete 删除
+                        🗑️ Delete
                     </button>
                 </div>
             `).join('');
